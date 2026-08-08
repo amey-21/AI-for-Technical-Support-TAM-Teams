@@ -1,0 +1,97 @@
+{
+  "total_cases": 10,
+  "passed_cases": 10,
+  "aggregate_quality_score": 0.82,
+  "cases": [
+    {
+      "name": "authentication error routing",
+      "task": "triage",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "performance error retrieval",
+      "task": "triage",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "billing classification",
+      "task": "triage",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "data loss priority",
+      "task": "triage",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "adversarial ambiguous request",
+      "task": "triage",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "unknown account empty state",
+      "task": "account brief",
+      "passed": true,
+      "quality_score": 1.0,
+      "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
+      "quality_judge": "not_applicable",
+      "judge_rationale": "Expected empty-state behavior was returned."
+    },
+    {
+      "name": "at-risk account summary",
+      "task": "account brief",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "risk quotes are verbatim",
+      "task": "account brief",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "null NPS adversarial case",
+      "task": "account brief",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    },
+    {
+      "name": "zero recent tickets adversarial case",
+      "task": "account brief",
+      "passed": true,
+      "quality_score": 0.8,
+      "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
+      "quality_judge": "heuristic_fallback",
+      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+    }
+  ]
+}
