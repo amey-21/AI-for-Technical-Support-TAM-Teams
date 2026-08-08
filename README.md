@@ -1,16 +1,16 @@
-# AI Support & TAM Toolkit
+﻿# AI Support & TAM Toolkit
 
-Internal tooling for Technical Support and Technical Account Managers (TAMs). The project uses only the supplied synthetic ticket, account, and Markdown knowledge-base data.
+Production-adjacent internal tooling for **Technical Support** and **Technical Account Managers (TAMs)**. The repository uses only the supplied synthetic ticket, account, and Markdown knowledge-base data.
 
 | Deliverable | Implementation | Status |
 |---|---|---|
-| Task 1 | Ticket triage with retrieval, structured output, and FastAPI | Complete |
-| Task 2 | Deterministic TAM account-health brief with quote-backed risks | Complete |
-| Task 3 | Evaluation harness with rules and optional LLM-as-judge | Complete |
-| Task 4 | Production design note | Complete |
-| Bonus | Streamlit TAM/support workspace | Complete |
-| Bonus | Account-brief Server-Sent Events (SSE) stream | Complete |
-| Bonus | Prompt versioning and changelog | Complete |
+| Task 1 | Ticket triage with retrieval, structured output, and FastAPI | ✅ |
+| Task 2 | Deterministic TAM account-health brief with quote-backed risks | ✅ |
+| Task 3 | Evaluation harness with rules and optional LLM-as-judge | ✅ |
+| Task 4 | Production design note | ✅ |
+| Bonus | Streamlit TAM/support workspace | ✅ |
+| Bonus | Account-brief Server-Sent Events (SSE) stream | ✅ |
+| Bonus | Prompt versioning and changelog | ✅ |
 
 The committed local evaluation report is [`eval_report.json`](eval_report.json): **10/10 acceptance cases pass** in deterministic no-secret mode.
 
@@ -19,29 +19,29 @@ The committed local evaluation report is [`eval_report.json`](eval_report.json):
 ## Architecture
 
 ```text
-Raw ticket or JSON ticket
-        |
-        v
-Local KB retrieval --> LangChain structured-output LLM (optional) --> Pydantic TriageResult
-        |                         |
-        +---- deterministic fallback
+Raw ticket / JSON ticket
+        │
+        ▼
+Local KB retrieval ──► LangChain structured-output LLM (optional) ──► Pydantic TriageResult
+        │                         │
+        └── deterministic fallback╰
 
-Account ID --> account + dataset-relative 90-day tickets --> risk evidence and quote validation
-                                                               |
-                                                               v
-                                             LangChain account-brief enrichment (optional)
-                                                               |
-                                                               v
-                                             normalized Pydantic AccountBrief or SSE stream
+Account ID ──► account + dataset-relative 90-day tickets ──► risk evidence / quote validation
+                                                                  │
+                                                                  ▼
+                                                LangChain account-brief enrichment (optional)
+                                                                  │
+                                                                  ▼
+                                                normalized Pydantic AccountBrief / SSE stream
 ```
 
 ### Key design choices
 
-- **Retrieval:** The Markdown corpus is split on `---`, retaining heading metadata. A deterministic lexical retriever prioritizes troubleshooting error-code references and returns the matching path/section.
-- **Structured outputs:** `TicketInput`, `TriageResult`, `AccountBrief`, `RiskItem`, and `JudgeResult` are Pydantic models. The LangChain path uses function/tool structured output rather than parsing free-form model text.
+- **Retrieval:** The small Markdown corpus is split on `---`, retaining heading metadata. A deterministic lexical retriever prioritizes troubleshooting error-code references and returns the matching path/section.
+- **Structured outputs:** `TicketInput`, `TriageResult`, `AccountBrief`, `RiskItem`, and `JudgeResult` are Pydantic models. The configured LangChain path uses function/tool structured output rather than parsing free-form model text.
 - **Provider boundary:** `src/common/llm.py` is the only LLM-provider integration point. It supports `openai` and `openai_compatible` settings through environment variables; business services do not import a vendor SDK.
 - **Determinism:** The local path is fully deterministic. The LangChain path uses temperature `0`, a fixed seed, stable ticket ordering, and a normalizer that restores canonical account fields, quote evidence, and risk ordering.
-- **Safety:** If no LLM credentials are present, or an LLM call fails, the tool uses its deterministic local policy. Ticket quotes used as risk evidence are verified against source ticket bodies.
+- **Safety:** If no LLM credentials are present, or if an LLM call fails, the tool continues using its deterministic local policy. Ticket quotes used as risk evidence are verified against ticket bodies.
 
 ---
 
@@ -49,14 +49,14 @@ Account ID --> account + dataset-relative 90-day tickets --> risk evidence and q
 
 ```text
 src/
-|- triage/             # Task 1 ticket-triage service
-|- account_brief/      # Task 2 account-health service
-|- evals/              # Task 3 evaluation harness and judge
-`- common/             # data loading, schemas, retrieval, LLM boundary, prompts
-ui/app.py              # Streamlit UI bonus
-tests/                 # Unit/API streaming checks
-DESIGN_NOTE.md         # Task 4
-eval_report.json       # Committed Task 3 output
+├── triage/             # Task 1 ticket-triage service
+├── account_brief/      # Task 2 account-health service
+├── evals/              # Task 3 evaluation harness and judge
+└── common/             # data loading, schemas, retrieval, LLM boundary, prompts
+ui/app.py               # Streamlit UI bonus
+tests/                  # Unit/API streaming checks
+DESIGN_NOTE.md          # Task 4
+eval_report.json        # Committed Task 3 output
 ```
 
 ---
@@ -71,7 +71,7 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-`activate-venv.ps1` is provided because some Windows Python distributions omit the standard PowerShell `Activate.ps1` template. If you prefer, no activation is required; use `.\.venv\Scripts\python.exe` directly in every command.
+> `activate-venv.ps1` is provided because some Windows Python distributions omit the standard PowerShell `Activate.ps1` template. If you prefer, no activation is required; use `.\.venv\Scripts\python.exe` directly in every command.
 
 ### Optional LLM configuration
 
@@ -126,7 +126,7 @@ Invoke-RestMethod -Method Post http://127.0.0.1:8000/triage/text `
 The result includes:
 
 - a specific product/module area, for example `DataBridge Pro / Pipeline Monitoring`;
-- category and P1-P4 urgency;
+- category and P1–P4 urgency;
 - classification reasoning;
 - matched KB document path/section;
 - routed team;
@@ -153,7 +153,7 @@ Invoke-RestMethod http://127.0.0.1:8000/account-brief/ACC-3336
 
 The brief contains three sections:
 
-1. Executive summary (3-5 sentences)
+1. Executive summary (3–5 sentences)
 2. Open risks and flagged issues
 3. Recommended TAM talking points
 
@@ -184,7 +184,7 @@ It regenerates `eval_report.json` and covers:
 - 5 ticket-triage cases, including an ambiguous/adversarial ticket;
 - 5 account-brief cases, including null-NPS, zero-recent-ticket, and unknown-account scenarios;
 - Pydantic schema/enums, KB retrieval, routing, quote provenance, determinism, and empty-state checks;
-- pass/fail and a `0-1` quality score per case.
+- pass/fail and a `0–1` quality score per case.
 
 The committed evaluation mode deliberately forces the deterministic local policy so it remains reproducible and does not transmit data. To run the optional provider-backed LangChain judge, after configuring `.env`:
 
@@ -233,7 +233,7 @@ curl.exe -N http://127.0.0.1:8000/account-brief/ACC-3336/stream
 The stream emits, in order:
 
 ```text
-metadata -> executive_summary -> open_risks -> talking_points -> complete
+metadata → executive_summary → open_risks → talking_points → complete
 ```
 
 ---
@@ -246,4 +246,4 @@ All LLM prompt templates and their changelog entries are in [`src/common/prompts
 
 ## Design note
 
-See [`DESIGN_NOTE.md`](DESIGN_NOTE.md) for the required production discussion of failure modes, latency versus quality, data sensitivity, and scaling to 10x ticket volume.
+See [`DESIGN_NOTE.md`](DESIGN_NOTE.md) for the required production discussion of failure modes, latency versus quality, data sensitivity, and scaling to 10× ticket volume.
