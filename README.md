@@ -300,4 +300,11 @@ All LLM prompt templates and their changelog entries are in [`src/common/prompts
 
 ## Design note
 
-See [`DESIGN_NOTE.md`](DESIGN_NOTE.md) for the required production discussion of failure modes, latency versus quality, data sensitivity, and scaling to 10× ticket volume.
+See [`DESIGN_NOTE.md`](DESIGN_NOTE.md) for the required production discussion of failure modes, latency versus quality, data sensitivity, and scaling to 10x ticket volume.
+
+---
+
+## Loom walkthrough
+
+Watch the implementation walkthrough here: **[Loom video link](https://www.loom.com/share/f01d9619f43542669cfc91fb6bde701e)**
+
