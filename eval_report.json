@@ -1,52 +1,52 @@
 {
   "total_cases": 10,
-  "passed_cases": 10,
-  "aggregate_quality_score": 0.82,
+  "passed_cases": 4,
+  "aggregate_quality_score": 0.36,
   "cases": [
     {
       "name": "authentication error routing",
       "task": "triage",
-      "passed": true,
-      "quality_score": 0.8,
+      "passed": false,
+      "quality_score": 0.0,
       "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The draft_response is specific and grounded in the provided KB entries: it correctly interprets GROUP_NOT_MAPPED as a missing IdP-to-CloudSync role mapping and references SSO_GROUP_NOT_FOUND advice to verify exact group name/case. It is actionable (tell the customer to add/update the mapping, test with a new user) and requests the right follow-up artifacts (exact IdP group name, configured mapping, screenshot/full error with timestamps). It also routes to the correct team (Integrations Support). Minor improvements would be to include the exact navigation path in CloudSync SSO settings, an example mapping, and mention checking IdP logs or clearing cached sessions, but these are optional. Overall the response is coherent and appropriate."
     },
     {
       "name": "performance error retrieval",
       "task": "triage",
-      "passed": true,
-      "quality_score": 0.8,
+      "passed": false,
+      "quality_score": 0.0,
       "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The draft correctly maps the reported ERR_CONNECTION_TIMEOUT to a network/source unreachable condition (consistent with the referenced KB) and recommends relevant checks (firewall rules, VPN status, source availability). Routing to Platform Support and the concise escalation instruction are appropriate. However, the response is not fully actionable: it omits specific diagnostic steps (e.g., traceroute, curl/telnet to the source, port/protocol checks), does not request logs, timestamps, source IP/port, or configuration details, and lacks criteria for when to escalate. Because it is coherent and grounded but could be more prescriptive and case-specific, it earns a high-but-not-perfect score."
     },
     {
       "name": "billing classification",
       "task": "triage",
       "passed": true,
-      "quality_score": 0.8,
+      "quality_score": 0.9,
       "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The draft response is specific and actionable: it correctly notes the KB mismatch, requests all necessary billing details (invoice number/PDF, invoice date and amount, billing account ID, last 4 digits/payment date, recent subscription/seat changes, and refund preference), and recommends escalation to Billing Operations. It is internally coherent and grounded in the provided case data. Minor improvements that would raise the score to near-perfect: add a secure method for sharing sensitive data (e.g., secure upload link or masked screenshot guidance) and an expected timeline or next-step ETA for the Billing Operations investigation. No unsupported claims were made."
     },
     {
       "name": "data loss priority",
       "task": "triage",
       "passed": true,
-      "quality_score": 0.8,
+      "quality_score": 0.75,
       "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "Strengths: The draft response correctly escalates to Incident Response for a P1 data-loss event, provides clear, actionable immediate asks (org ID, affected datasets, timestamps, admin actions, logs/screenshots), and gives sensible containment advice (don\u2019t perform restores or bulk writes, pause syncs) and asks for consent to access logs/backups. Weaknesses: The matched_kb_doc cited is unrelated (onboarding guide) which undermines grounding and coherence. The draft could be improved by explicitly requesting backup/retention windows, last-good-backup timestamp, storage/region/environment details, recovery SLAs, and a preferred contact method and expected next-step timeline. No unsupported claims present. Overall useful and actionable but not fully comprehensive and has a mismatched KB reference."
     },
     {
       "name": "adversarial ambiguous request",
       "task": "triage",
       "passed": true,
-      "quality_score": 0.8,
+      "quality_score": 0.92,
       "criteria": "Output validates through Pydantic and satisfies case-specific routing criteria.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The draft response is specific, grounded in the cited KB items (parallel branches on Professional+, the 30s action timeout and async actions, and the \"Nightly data export\" template), and offers actionable workarounds and a clear list of information to collect for triage/escalation. Routing to Platform Support and logging a feature request is appropriate. The response is coherent and avoids unsupported claims. Minor gaps: it doesn\u2019t state expected next steps after receiving the requested details (owner, timeline, or prioritization criteria) and doesn\u2019t explicitly confirm an exhaustive KB search to prove the feature is absent. Those are small omissions, so the score is high but not perfect."
     },
     {
       "name": "unknown account empty state",
@@ -60,38 +60,38 @@
     {
       "name": "at-risk account summary",
       "task": "account brief",
-      "passed": true,
-      "quality_score": 0.8,
+      "passed": false,
+      "quality_score": 0.0,
       "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The brief contains useful, actionable recommendations (QBR, executive engagement, adoption campaigns) and specific data points (ARR, renewal date, seat counts, \u2018198 users\u2019 impacted). However it is internally inconsistent and not fully evidence-grounded: open_risks repeats the same risk twice; evidence_quote fields are null despite the executive summary and talking points quoting a specific ticket (\u201cPage loads...119+ seconds\u201d); tickets_considered=1 conflicts with the executive summary\u2019s \u2018seven open tickets\u2019; the competing-vendor escalation is described as high severity in the summary but is not represented in open_risks. These inconsistencies and missing source linkage mean claims are not fully supported. The response is partially actionable but unreliable as-is, so it fails acceptance."
     },
     {
       "name": "risk quotes are verbatim",
       "task": "account brief",
-      "passed": true,
-      "quality_score": 0.8,
+      "passed": false,
+      "quality_score": 0.0,
       "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The brief contains useful, actionable recommendations but has multiple unsupported claims and internal inconsistencies that reduce trustworthiness. Specific issues: (1) open_risks_and_flagged_issues duplicates the same risk and both entries have evidence_quote=null, so the high-severity risk is ungrounded. (2) Executive summary asserts \"three recent P1-level incidents\" and an active performance incident, but tickets_considered=1 and the ticket window (2026-02-21 to 2026-05-22) implies only one ticket was reviewed\u2014these counts conflict. (3) A quoted symptom in the talking points (\"Page loads are taking 119+ seconds and API operations are timing out.\") lacks a source or evidence_quote. (4) Named stakeholders (e.g., VP Technology Quinn Wilson) and proposed timelines/renewal urgency are presented without cited evidence. Because the response makes several unsupported assertions and has contradictory fields, quality is low despite actionable suggestions. Recommendations to raise score: include explicit evidence_quote entries with sources for each risk, reconcile ticket counts/incidents with the escalation notes, cite the origin of quoted customer complaints, and attach a clear remediation timeline and stakeholder contact data."
     },
     {
       "name": "null NPS adversarial case",
       "task": "account brief",
-      "passed": true,
-      "quality_score": 0.8,
+      "passed": false,
+      "quality_score": 0.0,
       "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The brief contains useful, actionable talking points and a specific quoted customer-reported error (good). However it has notable internal inconsistencies and unsupported claims: it labels usage as \u201cinactive\u201d while showing 1,693 of 1,845 seats active; tickets_considered is 1 despite mentioning 7 open tickets and asserting \u201c3 consecutive P1 tickets\u201d (duplicated entry) with no evidence_quote; escalation claims about a decision-maker evaluating a competitor lack supporting evidence. The schema fields are present but the conflicting/unsupported items reduce reliability and require clarification or sourcing."
     },
     {
       "name": "zero recent tickets adversarial case",
       "task": "account brief",
-      "passed": true,
-      "quality_score": 0.8,
+      "passed": false,
+      "quality_score": 0.0,
       "criteria": "Valid schema/empty-state and explicit deterministic acceptance condition.",
-      "quality_judge": "heuristic_fallback",
-      "judge_rationale": "Deterministic fallback: response contains the required explanatory narrative."
+      "quality_judge": "llm",
+      "judge_rationale": "The account brief contains several useful, specific facts (ARR, tier, seat counts, integrations, QBR date, recommended talking points) and is actionable. However it has internal inconsistencies and missing determinism: 'tickets_considered' is 0 despite stating 11 open support tickets; 'open_risks_and_flagged_issues' is empty though multiple engagement risks are described (11 open tickets, last login 57 days); there is no explicit, deterministic acceptance condition as required. Dates lack context (e.g., 'last login 57 days' relative to which reference date). Because of these contradictions and the missing acceptance condition, the quality is low."
     }
   ]
 }

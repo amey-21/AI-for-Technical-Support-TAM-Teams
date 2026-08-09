@@ -186,12 +186,10 @@ It regenerates `eval_report.json` and covers:
 - Pydantic schema/enums, KB retrieval, routing, quote provenance, determinism, and empty-state checks;
 - pass/fail and a `0–1` quality score per case.
 
-The committed evaluation mode deliberately forces the deterministic local policy so it remains reproducible and does not transmit data. To run the optional provider-backed LangChain judge, after configuring `.env`:
+The harness automatically uses the configured LangChain provider for task generation and LLM-as-judge scoring. If no provider is configured, a provider call fails, or structured output is unavailable, it automatically records and uses the deterministic local fallback instead. This keeps the same command runnable in offline CI and local demos:
 
 ```powershell
-$env:EVAL_WITH_LLM = '1'
 python -m src.evals.run
-Remove-Item Env:EVAL_WITH_LLM
 ```
 
 Run the unit/API checks with:
@@ -233,8 +231,10 @@ curl.exe -N http://127.0.0.1:8000/account-brief/ACC-3336/stream
 The stream emits, in order:
 
 ```text
-metadata → executive_summary → open_risks → talking_points → complete
+status -> metadata -> executive_summary -> open_risks -> talking_points -> complete
 ```
+
+Use `curl.exe -N` rather than Swagger UI to observe event arrival. The endpoint sends an immediate `status` event, then emits each completed brief section without artificial delay.
 
 ---
 

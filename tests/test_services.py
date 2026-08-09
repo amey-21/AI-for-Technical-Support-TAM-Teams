@@ -33,6 +33,7 @@ class ServiceTests(unittest.TestCase):
         response = TestClient(app).get("/account-brief/ACC-3336/stream")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["content-type"].split(";", 1)[0], "text/event-stream")
+        self.assertIn("event: status", response.text)
         self.assertIn("event: executive_summary", response.text)
         self.assertIn("event: open_risks", response.text)
         self.assertIn("event: talking_points", response.text)

@@ -22,7 +22,7 @@ class LLMClient:
         # LLM_BASE_URL, allowing the provider endpoint/model to be swapped in .env.
         from langchain_core.prompts import ChatPromptTemplate
         from langchain_openai import ChatOpenAI
-        options = {"model": self.model, "api_key": os.environ["LLM_API_KEY"], "temperature": 0, "seed": self.seed}
+        options = {"model": self.model, "api_key": os.environ["LLM_API_KEY"], "temperature": 0, "seed": self.seed, "timeout": 30, "max_retries": 1}
         if os.getenv("LLM_BASE_URL"):
             options["base_url"] = os.environ["LLM_BASE_URL"]
         model = ChatOpenAI(**options)

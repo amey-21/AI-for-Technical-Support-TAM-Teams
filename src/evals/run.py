@@ -1,16 +1,12 @@
 """Deterministic acceptance harness; run with `python -m src.evals.run`."""
 import json
-import os
 from pathlib import Path
 from src.common.data import ROOT, accounts, account_tickets
+from src.common.llm import LLMClient
 from src.common.models import TicketInput
 from src.triage import triage_ticket
 from src.account_brief import get_account_brief
 from src.evals.judge import assess_quality
-
-class LocalOnlyClient:
-    """Prevents accidental network use during the committed deterministic report."""
-    enabled = False
 
 def check(name, task, passed, response, criteria, client):
     if response is None:
@@ -19,7 +15,10 @@ def check(name, task, passed, response, criteria, client):
     return {"name": name, "task": task, "passed": bool(passed and judge.passed), "quality_score": judge.quality_score if passed and judge.passed else 0.0, "criteria": criteria, "quality_judge": mode, "judge_rationale": judge.rationale}
 
 def run() -> dict:
-    client = None if os.getenv("EVAL_WITH_LLM") == "1" else LocalOnlyClient()
+    # Always prefer the configured LLM. The service and judge implementations
+    # independently fall back to deterministic local behavior on no credentials,
+    # provider outages, unsupported structured output, or malformed responses.
+    client = LLMClient()
     results=[]
     triage_cases = [
       ("authentication error routing", TicketInput(subject="CloudSync SSO fails with GROUP_NOT_MAPPED", body="New users cannot login. GROUP_NOT_MAPPED appears."), lambda r: r.category == "Integration" and r.matched_kb_doc and "authentication-sso" in r.matched_kb_doc),
