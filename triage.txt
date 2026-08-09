@@ -1,0 +1,4 @@
+{
+    "subject": "Production pipeline timeout",
+    "body": "DataBridge Pro pipeline returns ERR_CONNECTION_TIMEOUT after 30s and is impacting 47 users."
+  }

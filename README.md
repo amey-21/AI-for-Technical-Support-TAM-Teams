@@ -63,7 +63,9 @@ eval_report.json        # Committed Task 3 output
 
 ## Setup
 
-Requires Python **3.11+**. This repository was verified with Python 3.12.
+Requires Python **3.11+**. This repository was verified with Python 3.12 on Windows; the same commands are supported on macOS and Linux.
+
+### Windows PowerShell
 
 ```powershell
 python -m venv .venv
@@ -73,12 +75,30 @@ python -m pip install -r requirements.txt
 
 > `activate-venv.ps1` is provided because some Windows Python distributions omit the standard PowerShell `Activate.ps1` template. If you prefer, no activation is required; use `.\.venv\Scripts\python.exe` directly in every command.
 
+### macOS and Linux (bash/zsh)
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+If `python3` is not available, use the command that refers to your Python 3.11+ installation. To leave the virtual environment on any platform, run `deactivate`.
+
 ### Optional LLM configuration
 
 The project works without an API key using local deterministic logic. To enable LangChain structured LLM enrichment and LLM-as-judge evaluation, copy the example file and fill in your own local values:
 
+**Windows PowerShell:**
+
 ```powershell
 Copy-Item .env.example .env
+```
+
+**macOS/Linux:**
+
+```bash
+cp .env.example .env
 ```
 
 ```dotenv
@@ -97,7 +117,7 @@ LLM_SEED=42
 
 ### Run the API
 
-```powershell
+```bash
 uvicorn src.main:app --reload
 ```
 
@@ -109,18 +129,38 @@ http://127.0.0.1:8000/docs
 
 ### JSON ticket input
 
+**Windows PowerShell:**
+
 ```powershell
 Invoke-RestMethod -Method Post http://127.0.0.1:8000/triage `
   -ContentType 'application/json' `
   -Body '{"subject":"Production pipeline timeout","body":"DataBridge Pro pipeline returns ERR_CONNECTION_TIMEOUT after 30s and is impacting 47 users."}'
 ```
 
+**macOS/Linux:**
+
+```bash
+curl -X POST http://127.0.0.1:8000/triage \
+  -H 'Content-Type: application/json' \
+  -d '{"subject":"Production pipeline timeout","body":"DataBridge Pro pipeline returns ERR_CONNECTION_TIMEOUT after 30s and is impacting 47 users."}'
+```
+
 ### Raw-text ticket input
+
+**Windows PowerShell:**
 
 ```powershell
 Invoke-RestMethod -Method Post http://127.0.0.1:8000/triage/text `
   -ContentType 'text/plain' `
   -Body 'CloudSync SSO reports GROUP_NOT_MAPPED for new users.'
+```
+
+**macOS/Linux:**
+
+```bash
+curl -X POST http://127.0.0.1:8000/triage/text \
+  -H 'Content-Type: text/plain' \
+  --data 'CloudSync SSO reports GROUP_NOT_MAPPED for new users.'
 ```
 
 The result includes:
@@ -147,8 +187,16 @@ print(result.model_dump())
 
 ## Task 2 - TAM account health brief
 
+**Windows PowerShell:**
+
 ```powershell
 Invoke-RestMethod http://127.0.0.1:8000/account-brief/ACC-3336
+```
+
+**macOS/Linux:**
+
+```bash
+curl http://127.0.0.1:8000/account-brief/ACC-3336
 ```
 
 The brief contains three sections:
@@ -175,7 +223,7 @@ brief = get_account_brief("ACC-3336")
 
 Run the standalone harness:
 
-```powershell
+```bash
 python -m src.evals.run
 ```
 
@@ -188,13 +236,13 @@ It regenerates `eval_report.json` and covers:
 
 The harness automatically uses the configured LangChain provider for task generation and LLM-as-judge scoring. If no provider is configured, a provider call fails, or structured output is unavailable, it automatically records and uses the deterministic local fallback instead. This keeps the same command runnable in offline CI and local demos:
 
-```powershell
+```bash
 python -m src.evals.run
 ```
 
 Run the unit/API checks with:
 
-```powershell
+```bash
 python -m unittest discover -s tests -v
 ```
 
@@ -204,7 +252,7 @@ python -m unittest discover -s tests -v
 
 The non-technical UI has two tabs: a support-agent ticket form and an account-selector TAM brief. It displays routing, KB citations, risk cards, direct evidence quotes, and talking points without requiring a user to read raw API JSON.
 
-```powershell
+```bash
 streamlit run ui/app.py
 ```
 
@@ -228,13 +276,19 @@ GET /account-brief/{account_id}/stream
 curl.exe -N http://127.0.0.1:8000/account-brief/ACC-3336/stream
 ```
 
+**macOS/Linux:**
+
+```bash
+curl -N http://127.0.0.1:8000/account-brief/ACC-3336/stream
+```
+
 The stream emits, in order:
 
 ```text
 status -> metadata -> executive_summary -> open_risks -> talking_points -> complete
 ```
 
-Use `curl.exe -N` rather than Swagger UI to observe event arrival. The endpoint sends an immediate `status` event, then emits each completed brief section without artificial delay.
+Use `curl.exe -N` on Windows or `curl -N` on macOS/Linux rather than Swagger UI to observe event arrival. The endpoint sends an immediate `status` event, then emits each completed brief section without artificial delay.
 
 ---
 
